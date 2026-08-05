@@ -159,29 +159,55 @@ let routeIndex = 0;
 // ================= MAP INIT =================
 
 function initMap() {
-  navigator.geolocation.getCurrentPosition((pos) => {
 
-    userLat = pos.coords.latitude;
-    userLng = pos.coords.longitude;
+  const savedLat = localStorage.getItem("rr_userLat");
+  const savedLng = localStorage.getItem("rr_userLng");
 
-    map = L.map("map").setView([userLat, userLng], 14);
+  if (savedLat && savedLng) {
 
-    L.tileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        attribution: "© OpenStreetMap"
-      }
-    ).addTo(map);
+    userLat = parseFloat(savedLat);
+    userLng = parseFloat(savedLng);
 
-   const userIcon = L.icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-  iconSize: [38, 38],
-  iconAnchor: [19, 38]
-});
+    loadMap();
 
-userMarker = L.marker([userLat, userLng], {
-  icon: userIcon
-})
+  } else {
+
+    navigator.geolocation.getCurrentPosition((pos) => {
+
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+
+      loadMap();
+
+    }, () => {
+
+      alert("Unable to get your location.");
+
+    });
+
+  }
+}
+
+function loadMap() {
+
+  map = L.map("map").setView([userLat, userLng], 14);
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution: "© OpenStreetMap"
+    }
+  ).addTo(map);
+
+  const userIcon = L.icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+    iconSize: [38, 38],
+    iconAnchor: [19, 38]
+  });
+
+  userMarker = L.marker([userLat, userLng], {
+    icon: userIcon
+  })
   .addTo(map)
   .bindPopup("You are here")
   .bindTooltip("YOU", {
@@ -190,9 +216,8 @@ userMarker = L.marker([userLat, userLng], {
     offset: [0, -10]
   })
   .openPopup();
-    showNearbyVolunteers();
 
-  });
+  showNearbyVolunteers();
 }
 
 // ================= SHOW 3 VOLUNTEERS =================

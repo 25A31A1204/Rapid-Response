@@ -507,11 +507,20 @@
       `Live: ${userLat?.toFixed(5) ?? '—'}, ${userLng?.toFixed(5) ?? '—'}`;
     setTimeout(() => markStep('location', 'done'), 800);
 
-    // ── Listen for volunteer acceptance ──
-    listenForVolunteerAcceptance();
-    addToHistory('SOS', userLat, userLng, 'active');
-  }
+   // ── Listen for volunteer acceptance ──
+listenForVolunteerAcceptance();
+addToHistory('SOS', userLat, userLng, 'active');
 
+// Open Volunteer Dashboard after all steps finish
+setTimeout(() => {
+
+    localStorage.setItem("rr_userLat", userLat);
+    localStorage.setItem("rr_userLng", userLng);
+
+    window.location.href = "volunteer-tracking.html";
+
+},1500);
+  }
   function handleOfflineSOS() {
     const mapLink = userLat ? `https://maps.google.com?q=${userLat},${userLng}` : 'Location unavailable';
 
