@@ -88,6 +88,217 @@
     .bnnav-item.active .bn-label{color:var(--teal);font-weight:600;}
     .bn-icon{font-size:20px;line-height:1;}
     .bn-label{font-size:10px;font-weight:500;letter-spacing:0.3px;}
+    /* ============================= */
+/* EMERGENCY PROFILE MODAL */
+/* ============================= */
+
+.profile-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+  padding: 20px;
+}
+
+.profile-modal.show {
+  display: flex;
+}
+
+.emergency-profile-box {
+  width: min(945px, 95vw);
+  background: #0b1822;
+
+  border: 1px solid rgba(0, 220, 200, 0.25);
+  border-radius: 30px;
+
+  padding: 36px;
+
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(0, 220, 200, 0.05);
+
+  animation: profileOpen 0.25s ease;
+}
+
+@keyframes profileOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* HEADER */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.profile-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  color: #00d9c5;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.profile-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(120, 70, 255, 0.15);
+  border: 1px solid rgba(140, 90, 255, 0.5);
+
+  color: #9a70ff;
+  font-size: 27px;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* EDIT BUTTON */
+
+.edit-profile-btn {
+  height: 45px;
+  padding: 0 22px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(0, 220, 200, 0.4);
+  background: rgba(0, 220, 200, 0.05);
+
+  color: #00d9c5;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.edit-profile-btn:hover {
+  background: rgba(0, 220, 200, 0.12);
+}
+
+/* CLOSE BUTTON */
+
+.close-profile-btn {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(100, 120, 145, 0.25);
+  background: rgba(40, 55, 70, 0.25);
+
+  color: #71829a;
+
+  font-size: 30px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.close-profile-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* PROFILE GRID */
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.profile-card {
+  min-height: 108px;
+
+  padding: 22px 24px;
+
+  background: #111e29;
+
+  border: 1px solid rgba(100, 125, 150, 0.18);
+  border-radius: 17px;
+}
+
+.profile-label {
+  color: #647895;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 2px;
+
+  margin-bottom: 13px;
+}
+
+.profile-value {
+  color: #e5e9f0;
+
+  font-size: 19px;
+  font-weight: 600;
+}
+
+/* MOBILE */
+
+@media (max-width: 750px) {
+
+  .emergency-profile-box {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  .profile-header {
+    align-items: flex-start;
+  }
+
+  .profile-title {
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+
+  .profile-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-actions {
+    gap: 6px;
+  }
+
+  .edit-profile-btn {
+    padding: 0 12px;
+  }
+}
 
     /* SOS OVERLAY */
     .sos-overlay{position:fixed;inset:0;z-index:500;background:rgba(8,12,20,0.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 0.35s;}
@@ -346,9 +557,10 @@
   <button class="bnnav-item" onclick="setTab(this); openSheet('history')">
     <span class="bn-icon">🔔</span><span class="bn-label">Alerts</span>
   </button>
-  <button class="bnnav-item" onclick="setTab(this); openSheet('contacts')">
-    <span class="bn-icon">👤</span><span class="bn-label">Profile</span>
-  </button>
+  <button class="bnnav-item" onclick="setTab(this); openEmergencyProfile()">
+  <span class="bn-icon">👤</span>
+  <span class="bn-label">Profile</span>
+</button>
 </nav>
 
 <script>
@@ -718,8 +930,92 @@ function clearHistory(){
     document.querySelectorAll('.bnnav-item').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
   }
+  function openEmergencyProfile() {
+  const modal = document.getElementById("emergencyProfileModal");
+
+  modal.classList.add("show");
+
+  document.body.style.overflow = "hidden";
+}
+
+function closeEmergencyProfile() {
+  const modal = document.getElementById("emergencyProfileModal");
+
+  modal.classList.remove("show");
+
+  document.body.style.overflow = "";
+}
+
+function editEmergencyProfile() {
+  // Put your existing profile-edit function here
+  console.log("Edit Emergency Profile");
+}
+document.getElementById("emergencyProfileModal").addEventListener("click", function(e) {
+  if (e.target === this) {
+    closeEmergencyProfile();
+  }
+});
 
   document.getElementById('greetName').textContent = `👋 Hi, ${USER_NAME}`;
 </script>
+<!-- EMERGENCY PROFILE MODAL -->
+<div id="emergencyProfileModal" class="profile-modal">
+  <div class="emergency-profile-box">
+
+    <div class="profile-header">
+      <div class="profile-title">
+        <div class="profile-icon">♙</div>
+        <span>EMERGENCY PROFILE</span>
+      </div>
+
+      <div class="profile-actions">
+        <button class="edit-profile-btn" onclick="editEmergencyProfile()">
+          ✎ Edit
+        </button>
+
+        <button class="close-profile-btn" onclick="closeEmergencyProfile()">
+          ×
+        </button>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+
+      <div class="profile-card">
+        <div class="profile-label">NAME</div>
+        <div class="profile-value" id="profileName">—</div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-label">BLOOD GROUP</div>
+        <div class="profile-value" id="profileBlood">O+</div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-label">ALLERGIES</div>
+        <div class="profile-value" id="profileAllergies">None</div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-label">EMERGENCY CONTACT</div>
+        <div class="profile-value" id="profileContact">
+          +91 XXXXXXXXXX
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-label">CONDITIONS</div>
+        <div class="profile-value" id="profileConditions">None</div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-label">INSURANCE</div>
+        <div class="profile-value" id="profileInsurance">N/A</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
